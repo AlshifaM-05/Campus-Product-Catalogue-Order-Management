@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Your Cart &mdash; CampusCart{% endblock %}
+{% block content %}
+<h1>Your Cart</h1>
+{% if items %}
+<table class="cart-table">
+    <thead>
+        <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Subtotal</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td class="cart-product">
+                <img src="{{ url_for('static', filename='img/products/' ~ item.product['image_file']) }}" alt="">
+                <a href="{{ url_for('product_detail', product_id=item.product['id']) }}">{{ item.product['name'] }}</a>
+            </td>
+            <td>{{ item.product['price']|money }}</td>
+            <td>
+                <form action="{{ url_for('update_cart', product_id=item.product['id']) }}" method="post" class="qty-form">
+                    <button name="action" value="decrease" type="submit">&minus;</button>
+                    <span>{{ item.quantity }}</span>
+                    <button name="action" value="increase" type="submit">+</button>
+                </form>
+            </td>
+            <td>{{ item.subtotal|money }}</td>
+            <td>
+                <form action="{{ url_for('update_cart', product_id=item.product['id']) }}" method="post">
+                    <button name="action" value="remove" type="submit" class="btn-link">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="cart-summary">
+    <p class="cart-total">Total: <strong>{{ total|money }}</strong></p>
+    <a href="{{ url_for('checkout') }}" class="btn-primary">Proceed to checkout</a>
+</div>
+{% else %}
+<p class="empty-state">Your cart is empty. <a href="{{ url_for('index') }}">Browse products</a></p>
+{% endif %}
+{% endblock %}

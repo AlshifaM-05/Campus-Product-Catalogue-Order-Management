@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Login &mdash; CampusCart{% endblock %}
+{% block content %}
+<div class="auth-box">
+    <h1>Login</h1>
+    <form method="post" class="auth-form">
+        <input type="hidden" name="next" value="{{ next_page }}">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autofocus>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit" class="btn-primary">Login</button>
+    </form>
+    <p class="muted">New to CampusCart? <a href="{{ url_for('register') }}">Create an account</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Order Confirmed &mdash; CampusCart{% endblock %}
+{% block content %}
+<div class="success-box">
+    <div class="success-mark">✅</div>
+    <h1>Thank you! Your order is placed.</h1>
+    <p>Order number <strong>CC-{{ '%05d'|format(order['id']) }}</strong></p>
+    <p>We will deliver to <strong>{{ order['hostel_block'] }}, Room {{ order['room_no'] }}</strong>.</p>
+    <ul class="summary-list narrow">
+        {% for item in items %}
+        <li>
+            <img src="{{ url_for('static', filename='img/products/' ~ item['image_file']) }}" alt="">
+            <span>{{ item['name'] }} &times; {{ item['quantity'] }}</span>
+            <strong>{{ (item['price_each'] * item['quantity'])|money }}</strong>
+        </li>
+        {% endfor %}
+    </ul>
+    <p class="cart-total">Total to pay ({{ order['pay_mode']|lower }}): <strong>{{ order['total']|money }}</strong></p>
+    <p>
+        <a href="{{ url_for('order_detail', order_id=order['id']) }}" class="btn-primary">View order</a>
+        <a href="{{ url_for('index') }}" class="btn-outline">Keep browsing</a>
+    </p>
+</div>
+{% endblock %}

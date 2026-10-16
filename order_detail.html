@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Order CC-{{ '%05d'|format(order['id']) }} &mdash; CampusCart{% endblock %}
+{% block content %}
+<a href="{{ url_for('my_orders') }}" class="back-link">&larr; All orders</a>
+<h1>Order CC-{{ '%05d'|format(order['id']) }}
+    <span class="status-badge status-{{ order['status'] }}">{{ order['status']|capitalize }}</span></h1>
+
+<div class="checkout-layout">
+    <div>
+        <ul class="summary-list">
+            {% for item in items %}
+            <li>
+                <img src="{{ url_for('static', filename='img/products/' ~ item['image_file']) }}" alt="">
+                <a href="{{ url_for('product_detail', product_id=item['product_id']) }}">{{ item['name'] }}</a>
+                <span>{{ item['price_each']|money }} &times; {{ item['quantity'] }}</span>
+                <strong>{{ (item['price_each'] * item['quantity'])|money }}</strong>
+            </li>
+            {% endfor %}
+        </ul>
+        <p class="cart-total">Total: <strong>{{ order['total']|money }}</strong></p>
+    </div>
+    <aside class="summary-box">
+        <h2>Delivery</h2>
+        <p>{{ order['hostel_block'] }}, Room {{ order['room_no'] }}</p>
+        <p>Phone: {{ order['phone'] }}</p>
+        <p>Payment: {{ order['pay_mode'] }}</p>
+        <p class="muted small">Placed on {{ order['created_at'] }}</p>
+        {% if order['status'] == 'placed' %}
+        <form method="post" action="{{ url_for('cancel_order', order_id=order['id']) }}"
+              onsubmit="return confirm('Cancel this order?');">
+            <button type="submit" class="btn-danger">Cancel order</button>
+        </form>
+        {% endif %}
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fef9c3"/><stop offset="1" stop-color="#fde68a"/></linearGradient></defs>
+<rect width="400" height="300" fill="url(#bg)"/>
+<ellipse cx="200" cy="262" rx="120" ry="12" fill="#000" opacity="0.10"/>
+
+<g transform="rotate(-35 140 150) translate(128 30)">
+<rect x="0" y="30" width="24" height="170" fill="#ef4444"/>
+<rect x="0" y="30" width="24" height="16" fill="#9ca3af"/>
+<rect x="0" y="46" width="24" height="10" fill="#f9a8d4"/>
+<polygon points="0,200 24,200 12,238" fill="#fcd9a8"/>
+<polygon points="7,224 17,224 12,238" fill="#374151"/>
+</g>
+<g transform="rotate(-35 200 150) translate(188 30)">
+<rect x="0" y="30" width="24" height="170" fill="#2563eb"/>
+<rect x="0" y="30" width="24" height="16" fill="#9ca3af"/>
+<rect x="0" y="46" width="24" height="10" fill="#f9a8d4"/>
+<polygon points="0,200 24,200 12,238" fill="#fcd9a8"/>
+<polygon points="7,224 17,224 12,238" fill="#374151"/>
+</g>
+<g transform="rotate(-35 260 150) translate(248 30)">
+<rect x="0" y="30" width="24" height="170" fill="#16a34a"/>
+<rect x="0" y="30" width="24" height="16" fill="#9ca3af"/>
+<rect x="0" y="46" width="24" height="10" fill="#f9a8d4"/>
+<polygon points="0,200 24,200 12,238" fill="#fcd9a8"/>
+<polygon points="7,224 17,224 12,238" fill="#374151"/>
+</g>
+</svg>

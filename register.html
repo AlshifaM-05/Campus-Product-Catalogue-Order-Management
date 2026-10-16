@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Register &mdash; CampusCart{% endblock %}
+{% block content %}
+<div class="auth-box">
+    <h1>Create your account</h1>
+    <form method="post" class="auth-form">
+        <label for="name">Full name</label>
+        <input type="text" id="name" name="name" required autofocus>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+        <label for="password">Password (at least 6 characters)</label>
+        <input type="password" id="password" name="password" minlength="6" required>
+        <button type="submit" class="btn-primary">Register</button>
+    </form>
+    <p class="muted">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+</div>
+{% endblock %}

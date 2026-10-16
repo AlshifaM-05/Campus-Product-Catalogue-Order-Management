@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}CampusCart &mdash; Browse Products{% endblock %}
+{% block content %}
+<section class="hero">
+    <img src="{{ url_for('static', filename='img/hero.svg') }}" alt="" class="hero-art">
+    <div class="hero-text">
+        <h1>Everything you need for campus life</h1>
+        <p>Browse, save your favourites and get your order delivered to your hostel.</p>
+    </div>
+</section>
+
+<section class="toolbar">
+    <div class="filter-bar">
+        <a href="{{ url_for('index', q=query, sort=sort) }}" class="chip {{ 'chip-active' if not active_category else '' }}">All</a>
+        {% for cat in categories %}
+            <a href="{{ url_for('index', category=cat, q=query, sort=sort) }}" class="chip {{ 'chip-active' if active_category == cat else '' }}">{{ cat }}</a>
+        {% endfor %}
+    </div>
+    <form method="get" class="sort-form">
+        <input type="hidden" name="category" value="{{ active_category }}">
+        <input type="hidden" name="q" value="{{ query }}">
+        <label for="sort">Sort by</label>
+        <select id="sort" name="sort" onchange="this.form.submit()">
+            {% for key, choice in sort_choices.items() %}
+                <option value="{{ key }}" {{ 'selected' if key == sort else '' }}>{{ choice[0] }}</option>
+            {% endfor %}
+        </select>
+        <noscript><button type="submit">Apply</button></noscript>
+    </form>
+</section>
+
+{% if products %}
+<div class="product-grid">
+    {% for product in products %}
+    <article class="product-card">
+        <form action="{{ url_for('toggle_wishlist', product_id=product['id']) }}" method="post" class="heart-form">
+            <input type="hidden" name="back" value="{{ request.full_path }}">
+            <button type="submit" class="heart {{ 'on' if product['id'] in wished else '' }}"
+                    title="{{ 'Remove from wishlist' if product['id'] in wished else 'Save to wishlist' }}">♥</button>
+        </form>
+        <a href="{{ url_for('product_detail', product_id=product['id']) }}" class="product-thumb">
+            <img src="{{ url_for('static', filename='img/products/' ~ product['image_file']) }}" alt="{{ product['name'] }}" loading="lazy">
+        </a>
+        <div class="product-info">
+            <a href="{{ url_for('product_detail', product_id=product['id']) }}" class="product-name">{{ product['name'] }}</a>
+            <p class="product-category">{{ product['category'] }}</p>
+            <p class="rating-line">
+                {% if product['review_count'] %}
+                    <span class="stars">{{ product['avg_rating']|stars }}</span> <small>({{ product['review_count'] }})</small>
+                {% else %}
+                    <small class="muted">No reviews yet</small>
+                {% endif %}
+            </p>
+            <p class="product-price">{{ product['price']|money }}</p>
+            {% if product['stock'] > 0 %}
+                {% if product['stock'] <= 5 %}<p class="low-stock">Only {{ product['stock'] }} left!</p>{% endif %}
+                <form action="{{ url_for('add_to_cart', product_id=product['id']) }}" method="post" class="quick-add">
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="back" value="{{ request.full_path }}">
+                    <button type="submit">Add to cart</button>
+                </form>
+            {% else %}
+                <p class="out-of-stock">Out of stock</p>
+            {% endif %}
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No products matched your search.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Checkout &mdash; CampusCart{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<div class="checkout-layout">
+    <form method="post" class="auth-form checkout-form">
+        <h2>Delivery details</h2>
+        <label for="hostel_block">Hostel / Block</label>
+        <input type="text" id="hostel_block" name="hostel_block" value="{{ form.hostel_block }}" placeholder="e.g. Block C" required>
+
+        <label for="room_no">Room number</label>
+        <input type="text" id="room_no" name="room_no" value="{{ form.room_no }}" placeholder="e.g. 214" required>
+
+        <label for="phone">Phone number</label>
+        <input type="tel" id="phone" name="phone" value="{{ form.phone }}" placeholder="10-digit mobile number" required>
+
+        <label for="pay_mode">Payment option</label>
+        <select id="pay_mode" name="pay_mode">
+            {% for m in pay_modes %}
+                <option value="{{ m }}" {{ 'selected' if m == form.pay_mode else '' }}>{{ m }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn-primary">Place order</button>
+        <p class="muted small">No online payment is taken. You pay when the order reaches you.</p>
+    </form>
+
+    <aside class="summary-box">
+        <h2>Order summary</h2>
+        <ul class="summary-list">
+            {% for item in items %}
+            <li>
+                <img src="{{ url_for('static', filename='img/products/' ~ item.product['image_file']) }}" alt="">
+                <span>{{ item.product['name'] }} &times; {{ item.quantity }}</span>
+                <strong>{{ item.subtotal|money }}</strong>
+            </li>
+            {% endfor %}
+        </ul>
+        <p class="cart-total">Total: <strong>{{ total|money }}</strong></p>
+    </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ product['name'] }} &mdash; CampusCart{% endblock %}
+{% block content %}
+<a href="{{ url_for('index') }}" class="back-link">&larr; Back to products</a>
+
+<div class="product-detail">
+    <div class="product-thumb-large">
+        <img src="{{ url_for('static', filename='img/products/' ~ product['image_file']) }}" alt="{{ product['name'] }}">
+    </div>
+    <div class="product-detail-info">
+        <p class="product-category">{{ product['category'] }}</p>
+        <h1>{{ product['name'] }}</h1>
+        <p class="rating-line">
+            {% if reviews %}
+                <span class="stars">{{ avg_rating|stars }}</span>
+                <small>{{ "%.1f"|format(avg_rating) }} out of 5 &middot; {{ reviews|length }} review{{ '' if reviews|length == 1 else 's' }}</small>
+            {% else %}
+                <small class="muted">No reviews yet. Be the first!</small>
+            {% endif %}
+        </p>
+        <p class="product-detail-price">{{ product['price']|money }}</p>
+        <p class="product-description">{{ product['description'] }}</p>
+        <p class="stock-line">
+            {% if product['stock'] > 5 %}In stock
+            {% elif product['stock'] > 0 %}<span class="low-stock">Only {{ product['stock'] }} left!</span>
+            {% else %}<span class="out-of-stock">Out of stock</span>{% endif %}
+        </p>
+
+        <div class="detail-actions">
+            {% if product['stock'] > 0 %}
+            <form action="{{ url_for('add_to_cart', product_id=product['id']) }}" method="post" class="add-to-cart-form">
+                <input type="hidden" name="back" value="{{ request.path }}">
+                <label for="quantity">Quantity</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product['stock'] }}">
+                <button type="submit">Add to cart</button>
+            </form>
+            {% endif %}
+            <form action="{{ url_for('toggle_wishlist', product_id=product['id']) }}" method="post">
+                <input type="hidden" name="back" value="{{ request.path }}">
+                <button type="submit" class="btn-outline">{{ '♥ Saved to wishlist' if is_wished else '♡ Save to wishlist' }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<section class="reviews" id="reviews">
+    <h2>Customer reviews</h2>
+
+    {% if current_user_name %}
+    <form method="post" action="{{ url_for('add_review', product_id=product['id']) }}" class="review-form">
+        <h3>{{ 'Update your review' if my_review else 'Write a review' }}</h3>
+        <div class="star-input">
+            {% for n in [5, 4, 3, 2, 1] %}
+                <input type="radio" id="star{{ n }}" name="rating" value="{{ n }}" {{ 'checked' if my_review and my_review['rating'] == n else '' }}>
+                <label for="star{{ n }}" title="{{ n }} star{{ '' if n == 1 else 's' }}">★</label>
+            {% endfor %}
+        </div>
+        <textarea name="comment" rows="3" maxlength="500" placeholder="Tell other students what you think (optional)">{{ my_review['comment'] if my_review else '' }}</textarea>
+        <button type="submit">{{ 'Update review' if my_review else 'Post review' }}</button>
+    </form>
+    {% else %}
+        <p class="muted"><a href="{{ url_for('login', next=request.path) }}">Log in</a> to write a review.</p>
+    {% endif %}
+
+    {% for r in reviews %}
+    <div class="review">
+        <div class="review-head"><strong>{{ r['reviewer'] }}</strong> <span class="stars">{{ r['rating']|stars }}</span></div>
+        {% if r['comment'] %}<p>{{ r['comment'] }}</p>{% endif %}
+        <small class="muted">{{ r['created_at'] }}</small>
+    </div>
+    {% endfor %}
+</section>
+
+{% if related %}
+<section class="related">
+    <h2>More in {{ product['category'] }}</h2>
+    <div class="related-row">
+        {% for p in related %}
+        <a href="{{ url_for('product_detail', product_id=p['id']) }}" class="related-card">
+            <img src="{{ url_for('static', filename='img/products/' ~ p['image_file']) }}" alt="{{ p['name'] }}" loading="lazy">
+            <span>{{ p['name'] }}</span>
+            <strong>{{ p['price']|money }}</strong>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}
